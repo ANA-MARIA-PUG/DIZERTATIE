@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartDenta Hub - Administrare Clinică</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKx3nfrR2E89F2A/fVd/Gg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Schimbat fundalul la un albastru/gri foarte pal, mai odihnitor */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f0f7ff; /* Albastru pal */
+        } 
+        /* Stil personalizat pentru umbre si colturi */
+        .card { 
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+            transition: transform 0.3s ease; /* Adaugat tranzitie pentru hover */
+        }
+        .table-container { 
+            max-height: 60vh; 
+            overflow-y: auto; 
+        }
+        .sticky-header thead { 
+            position: sticky; 
+            top: 0; 
+            z-index: 10; 
+        }
+        
+        /* Stil pentru butoanele de navigare (schimbat culorile pentru coeziune) */
+        .nav-btn {
+            background-color: #e5e7eb; /* gray-200 */
+            color: #4b5563; /* gray-700 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-lg */
+            display: flex; /* Permite alinierea iconiței */
+            align-items: center;
+        }
+        .nav-btn:hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* hover:shadow-xl */
+            transform: translateY(-2px); /* Efect subtil de ridicare */
+        }
+        /* Culoarea activă schimbată din roșu pur în Indigo-700 (mai profesional) */
+        .nav-btn.active-nav {
+            background-color: #4338ca; /* indigo-700 */
+            color: white; 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+            transform: none; /* Elimină efectul de hover pe activ */
+        }
+
+        /* NOU: Layout-ul Dashboard (Meniu Stanga / Continut Dreapta) */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 256px 1fr; 
+            gap: 2rem; 
+            max-width: 1280px; 
+            margin: 0 auto;
+        }
+
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-10">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-xl sm:text-6xl font-extrabold text-red-700 tracking-tight">
+                <i class="fas fa-tooth text-red-700 mr-2"></i> 
+                <b>SMARTDENTA HUB</b>
+            </h1>
+            <p class="text-2xl text-indigo-600 mt-1">
+                <b>PLATFORMA TA DE SUCCES STOMATOLOGIC</b>
+            </p>
+        </header>
+    </div>
+
+    <div class="dashboard-layout p-4 sm:p-0"> 
+        
+        <nav class="flex flex-col justify-start gap-3">
+            <span class="text-xl font-bold text-indigo-800 self-start mr-4 mb-2">ACCES RAPID:</span>
+            
+            <button id="nav-detalii" onclick="showSection('detalii')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition duration-200"><i class="fas fa-info-circle mr-3"></i>1. Detalii Cabinet & Tarife</button>
+            <button id="nav-pacienti" onclick="showSection('pacienti')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition duration-200"><i class="fas fa-users mr-3"></i>2. Pacienți</button>
+            <button id="nav-doctori" onclick="showSection('doctori')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition duration-200"><i class="fas fa-user-md mr-3"></i>3. Doctori</button>
+            <button id="nav-istoric" onclick="showSection('istoric')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition duration-200"><i class="fas fa-notes-medical mr-3"></i>4. Istoric Tratamente</button>
+            <button id="nav-imagini" onclick="showSection('imagini')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition duration-200"><i class="fas fa-image mr-3"></i>5. Imagini Medicale</button>
+            <button id="nav-administrare" onclick="showSection('administrare')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition duration-200 bg-red-600 text-white hover:bg-red-700 mt-4"><i class="fas fa-user-plus mr-3"></i>6. Adaugă Pacient</button>
+        </nav>
+
+        <div id="content-container">
+                        
+            <div id="detalii-section" class="hidden">
+                <div class="bg-white p-6 rounded-2xl card mb-8">
+                    <h2 class="text-2xl font-extrabold text-indigo-800 mb-4 border-b pb-2">Detalii Cabinet Stomatologic PUGULET</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700">
+                        <div>
+                            <p class="mb-2"><strong class="text-indigo-600">Adresă:</strong> Sector3, București</p>
+                            <p class="mb-2"><strong class="text-indigo-600">Telefon:</strong> 0728589684</p>
+                            <p class="mb-2"><strong class="text-indigo-600">Email:</strong> info@pugulet.ro</p>
+                        </div>
+                        <div>
+                            <p class="mb-2"><strong class="text-indigo-600">Fondator:</strong> Dr. Ana Pug</p>
+                            <p class="mb-2"><strong class="text-indigo-600">Specializări Cheie:</strong> Pedodonție, Competență Inhalosedare, Competență Implantologie.</p>
+                            <p class="text-sm italic">Cabinet dedicat exclusiv stomatologiei pediatrice.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl card">
+                    <h2 class="text-2xl font-extrabold text-indigo-800 mb-4 border-b pb-2">Tarife (Exemplu)</h2>
+                    <div class="table-container">
+                        <table class="min-w-full divide-y divide-gray-200 sticky-header">
+                            <thead class="bg-gray-100"> <tr>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-indigo-700 uppercase tracking-wider">Serviciu</th>
+                                    <th class="px-4 py-3 text-left text-sm font-medium text-indigo-700 uppercase tracking-wider">Categoria</th>
+                                    <th class="px-4 py-3 text-right text-sm font-medium text-indigo-700 uppercase tracking-wider">Preț Estimativ (RON)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200 text-gray-700">
+                                <tr class="odd:bg-gray-50"><td class="px-4 py-2">Consultație Pedodonție</td><td>Diagnostic</td><td class="px-4 py-2 font-medium text-right">250</td></tr>
+                                <tr class="odd:bg-gray-50"><td class="px-4 py-2">Inhalosedare (30 min)</td><td>Relaxare</td><td class="px-4 py-2 font-medium text-right">200 - 450</td></tr>
+                                <tr class="odd:bg-gray-50"><td class="px-4 py-2">Extracție Dinte Temporar</td><td>Chirurgie</td><td class="px-4 py-2 font-medium text-right">150 - 250</td></tr>
+                                <tr class="odd:bg-gray-50"><td class="px-4 py-2">Sigilare Șanțuri</td><td>Profilaxie</td><td class="px-4 py-2 font-medium text-right">150 - 200 / dinte</td></tr>
+                                <tr class="odd:bg-gray-50"><td class="px-4 py-2">Obturație (plombă)</td><td>Terapie</td><td class="px-4 py-2 font-medium text-right">220 - 400</td></tr>
+                                <tr class="odd:bg-gray-50"><td class="px-4 py-2">Aparat Dentar Mobil / arcadă</td><td>Ortodonție</td><td class="px-4 py-2 font-medium text-right">1000 - 1500</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-500 italic">Notă: Aceste tarife sunt estimative, bazate pe informații publice generale despre stomatologia pediatrică din București.</p>
+                </div>
+            </div>
+
+            <div id="pacienti-section" class="hidden bg-white p-6 rounded-2xl card">
+                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Lista Pacienților înregistrați</h2>
+                <div class="mb-4">
+                    <input type="text" id="pacient-search" onkeyup="filterTable('pacientiTabel', this.value)" placeholder="Caută pacient după nume sau telefon..." class="mt-1 block w-full md:w-1/2 rounded-md border-gray-300 shadow-sm p-2 border focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div class="table-container">
+                    <table id="pacientiTabel" class="min-w-full divide-y divide-gray-200 sticky-header">
+                        <thead class="bg-gray-100"></thead>
+                        <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="doctori-section" class="hidden bg-white p-6 rounded-2xl card">
+                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Lista Doctorilor</h2>
+                <div class="table-container">
+                    <table id="doctoriTabel" class="min-w-full divide-y divide-gray-200 sticky-header">
+                        <thead class="bg-gray-100"></thead>
+                        <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div id="istoric-section" class="hidden bg-white p-6 rounded-2xl card">
+                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Istoric Complet Tratamente & Plăți</h2>
+                <div class="table-container">
+                    <table id="istoricTabel" class="min-w-full divide-y divide-gray-200 sticky-header">
+                        <thead class="bg-gray-100"></thead>
+                        <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="imagini-section" class="hidden bg-white p-6 rounded-2xl card">
+                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Catalog Imagini Medicale</h2>
+                <div class="table-container">
+                    <table id="imaginiTabel" class="min-w-full divide-y divide-gray-200 sticky-header">
+                        <thead class="bg-gray-100"></thead>
+                        <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div id="administrare-section" class="hidden">
+                <div class="bg-white p-6 rounded-2xl card max-w-2xl mx-auto">
+                    <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Adaugă Pacient Nou</h2>
+                    <form id="add-patient-form" class="space-y-4">
+                        <div><label for="nume" class="block text-sm font-medium text-gray-700">Nume Complet:</label><input type="text" id="nume" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-red-500 focus:ring-red-500"></div>
+                        <div><label for="data_nasterii" class="block text-sm font-medium text-gray-700">Data Nașterii:</label><input type="date" id="data_nasterii" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-red-500 focus:ring-red-500"></div>
+                        <div><label for="telefon" class="block text-sm font-medium text-gray-700">Număr Telefon:</label><input type="tel" id="telefon" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-red-500 focus:ring-red-500"></div>
+                        <div><label for="istoric" class="block text-sm font-medium text-gray-700">Istoric Medical/Alergii (separate prin virgulă):</label><input type="text" id="istoric" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border focus:border-red-500 focus:ring-red-500"></div>
+                        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-md hover:bg-red-700 transition duration-150 font-semibold flex items-center justify-center">
+                            <i class="fas fa-user-plus mr-2"></i> Înregistrează Pacient
+                        </button>
+                        <div id="form-message" class="mt-4 p-3 rounded-md text-sm text-center hidden"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:5000/api/';
+
+        function formatMonetary(value) {
+            return value.toLocaleString('ro-RO', { style: 'currency', currency: 'RON', minimumFractionDigits: 0 });
+        }
+
+        // Functie de filtrare NOUA
+        function filterTable(tableId, searchTerm) {
+            const table = document.getElementById(tableId);
+            const rows = table.querySelector('tbody').getElementsByTagName('tr');
+            const filter = searchTerm.toUpperCase();
+
+            for (let i = 0; i < rows.length; i++) {
+                let row = rows[i];
+                let cells = row.getElementsByTagName('td');
+                let found = false;
+
+                // Caută în toate coloanele rândului (cu excepția primei - ID-ul scurtat)
+                for (let j = 1; j < cells.length; j++) {
+                    const cellText = cells[j].textContent || cells[j].innerText;
+                    if (cellText.toUpperCase().indexOf(filter) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        }
+        
+        // Functii de afisare a datelor (Populare Generica)
+        function generateTable(containerId, data, headers) {
+            const container = document.getElementById(containerId);
+            const thead = container.querySelector('thead');
+            const tbody = container.querySelector('tbody');
+            
+            thead.innerHTML = '';
+            tbody.innerHTML = '';
+
+            let headerRow = '<tr>';
+            headers.forEach(header => {
+                headerRow += `<th class="px-4 py-3 text-left text-sm font-medium text-indigo-700 uppercase tracking-wider">${header.label}</th>`;
+            });
+            headerRow += '</tr>';
+            thead.innerHTML = headerRow;
+
+            if (data.length === 0) {
+                 tbody.innerHTML = `<tr><td colspan="${headers.length}" class="px-4 py-4 text-center text-gray-500">Nu au fost găsite înregistrări.</td></tr>`;
+                 return;
+            }
+
+            data.forEach((item, index) => {
+                const rowClass = index % 2 === 0 ? 'bg-white hover:bg-gray-100' : 'bg-gray-50 hover:bg-gray-100';
+                let rowHTML = `<tr class="${rowClass} transition duration-150 ease-in-out">`;
+                headers.forEach(header => {
+                    let value = item[header.key];
+                    let cellContent = value || '-'; 
+                    let additionalClass = '';
+
+                    if (header.key === '_id') {
+                        // NOU: Scurteaza ID-ul pentru afisare si pastreaza full ID in tooltip
+                        const shortId = value ? value.substring(0, 6) + '...' : '-';
+                        cellContent = `<span title="${value}">${shortId}</span>`;
+                        additionalClass = 'font-mono text-xs';
+                    } else if (Array.isArray(value)) {
+                         cellContent = value.join('; ');
+                    } else if (typeof value === 'object' && value !== null) {
+                        if (containerId === 'doctoriTabel' && header.key === 'prog_lucru') {
+                            cellContent = Object.entries(value).map(([day, time]) => `**${day}**: ${time}`).join(' | ');
+                        } else if (containerId === 'istoricTabel' && header.key === 'detalii_procedura') {
+                            const totalCost = item.plata?.suma ? formatMonetary(item.plata.suma) : '-';
+                            const proceduri = value.map(p => `${p.nume} (${p.cost} RON)`).join(', ');
+                            cellContent = `**Total**: ${totalCost} | **Proceduri**: ${proceduri}`;
+                        } else {
+                            cellContent = JSON.stringify(value); 
+                        }
+                    } else if (header.key.includes('data') && value) {
+                         cellContent = new Date(value).toLocaleDateString('ro-RO');
+                    }
+                    
+                    if (containerId === 'imaginiTabel' && header.key === 'cale_stocare' && value) {
+                        cellContent = `<a href="${value}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline font-medium">Deschide Imagine</a>`;
+                    }
+                    
+                    rowHTML += `<td class="px-4 py-2 text-sm text-gray-700 ${additionalClass}">${cellContent}</td>`; 
+                });
+                rowHTML += '</tr>';
+                tbody.innerHTML += rowHTML;
+            });
+        }
+
+        // Functie generica de preluare a datelor
+        async function fetchData(endpoint) {
+             try {
+                 // Aici ar trebui afișat un mesaj de loading!
+                 
+                 const response = await fetch(API_BASE + endpoint);
+                 const data = await response.json();
+                 
+                 if (data.eroare) {
+                      console.error(`Eroare la preluarea ${endpoint}:`, data.eroare);
+                      return [];
+                 }
+                 return data;
+             } catch (error) {
+                 console.error('Eroare de conexiune la API:', error);
+                 const errorMsg = '<tr><td colspan="6" class="px-4 py-4 text-center text-red-600">Eroare de conexiune la serverul Python! Asigurați-vă că rulează pe portul 5000.</td></tr>';
+                 if(document.getElementById('pacientiTabel')) document.getElementById('pacientiTabel').querySelector('tbody').innerHTML = errorMsg;
+                 if(document.getElementById('doctoriTabel')) document.getElementById('doctoriTabel').querySelector('tbody').innerHTML = errorMsg;
+                 if(document.getElementById('istoricTabel')) document.getElementById('istoricTabel').querySelector('tbody').innerHTML = errorMsg;
+                 if(document.getElementById('imaginiTabel')) document.getElementById('imaginiTabel').querySelector('tbody').innerHTML = errorMsg; 
+                 return [];
+             }
+        }
+
+        // Functia de navigare si incarcare a sectiunii
+        async function showSection(sectionId) {
+            // Ascunde toate sectiunile
+            document.querySelectorAll('#content-container > div').forEach(div => div.classList.add('hidden'));
+            // Arata sectiunea ceruta
+            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
+
+            // Actualizeaza stilul butoanelor de navigare (Activ = Indigo-700)
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active-nav');
+                // Tratare speciala pentru Adauga Pacient (pastreaza culoarea rosie)
+                if (btn.id !== 'nav-administrare') {
+                    btn.classList.remove('bg-red-600', 'text-white', 'shadow-xl');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'shadow-lg');
+                } else {
+                     btn.classList.add('bg-red-600', 'text-white', 'shadow-xl');
+                }
+            });
+            
+            // Aplica stilul activ, exceptie facand Adauga Pacient
+            if (sectionId !== 'administrare') {
+                document.getElementById(`nav-${sectionId}`).classList.remove('bg-gray-200', 'text-gray-700', 'shadow-lg');
+                document.getElementById(`nav-${sectionId}`).classList.add('active-nav');
+            } else {
+                 // Butonul de administrare este oricum rosu, nu are clasa active-nav
+                 document.getElementById(`nav-${sectionId}`).classList.add('bg-red-700', 'shadow-xl');
+            }
+
+
+            // Logica de încărcare a datelor
+            if (sectionId === 'pacienti') {
+                const headers = [
+                    { key: '_id', label: 'ID CouchDB' },
+                    { key: 'nume_complet', label: 'Nume' },
+                    { key: 'data_nasterii', label: 'Data Nașterii' },
+                    { key: 'numar_telefon', label: 'Telefon' },
+                    { key: 'istoric_medical', label: 'Istoric/Alergii' },
+                    { key: 'doctor_id_curent', label: 'ID Doctor' }
+                ];
+                // Resetam campul de cautare si afisam tot tabelul la reincarcarea sectiunii
+                document.getElementById('pacient-search').value = '';
+                const data = await fetchData('pacienti');
+                generateTable('pacientiTabel', data, headers);
+            } else if (sectionId === 'doctori') {
+                const headers = [
+                    { key: '_id', label: 'ID Doctor' },
+                    { key: 'nume_complet', label: 'Nume' },
+                    { key: 'specializare', label: 'Specializare' },
+                    { key: 'prog_lucru', label: 'Program Lucru' }
+                ];
+                const data = await fetchData('doctori');
+                generateTable('doctoriTabel', data, headers);
+            } else if (sectionId === 'istoric') {
+                const headers = [
+                    { key: '_id', label: 'ID Document' },
+                    { key: 'id_pacient', label: 'ID Pacient' },
+                    { key: 'id_doctor', label: 'ID Doctor' },
+                    { key: 'data_tratament', label: 'Data' },
+                    { key: 'detalii_procedura', label: 'Proceduri & Plată' },
+                    { key: 'note_medicale', label: 'Note' }
+                ];
+                const data = await fetchData('istoric');
+                generateTable('istoricTabel', data, headers);
+            } else if (sectionId === 'imagini') { 
+                const headers = [
+                    { key: '_id', label: 'ID Document' },
+                    { key: 'pacient_id', label: 'ID Pacient' },
+                    { key: 'tip_examen', label: 'Tip Examen' },
+                    { key: 'data_examinarii', label: 'Data Examen' },
+                    { key: 'nume_fisier', label: 'Fișier' },
+                    { key: 'cale_stocare', label: 'Link Imagine' } 
+                ];
+                const data = await fetchData('imagini');
+                generateTable('imaginiTabel', data, headers);
+            }
+        }
+        
+        // Logica de Adaugare Pacient (Formular POST)
+        document.getElementById('add-patient-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const messageDiv = document.getElementById('form-message');
+            messageDiv.classList.add('hidden');
+
+            const istoricArray = form.istoric.value.split(',').map(item => item.trim()).filter(item => item.length > 0);
+
+            const patientData = {
+                nume_complet: form.nume.value,
+                data_nasterii: form.data_nasterii.value,
+                numar_telefon: form.telefon.value,
+                istoric_medical: istoricArray,
+                doctor_id_curent: 'D1' // Asignare implicita
+            };
+
+            try {
+                const response = await fetch(API_BASE + 'pacienti', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(patientData),
+                });
+                const result = await response.json();
+
+                if (response.status === 201) {
+                    messageDiv.textContent = `Succes! Pacientul a fost adăugat cu ID: ${result.id}.`;
+                    messageDiv.className = 'mt-4 p-3 rounded-md text-sm text-center bg-green-100 text-green-700';
+                    form.reset();
+                    showSection('pacienti'); // Navigheaza la lista de pacienti dupa adaugare
+                } else {
+                    messageDiv.textContent = `Eroare la adăugare: ${result.eroare || 'Verificați consola PyCharm.'}`;
+                    messageDiv.className = 'mt-4 p-3 rounded-md text-sm text-center bg-red-100 text-red-700';
+                }
+            } catch (error) {
+                messageDiv.textContent = 'Eroare de rețea. Asigurați-vă că serverul Flask rulează.';
+                messageDiv.className = 'mt-4 p-3 rounded-md text-sm text-center bg-red-100 text-red-700';
+                console.error('Eroare POST:', error);
+            }
+            messageDiv.classList.remove('hidden');
+        });
+
+        // Schimba sectiunea initiala la 'detalii'
+        window.onload = () => showSection('detalii');
+    </script>
+</body>
+</html>
