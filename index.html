@@ -34,7 +34,6 @@
             margin: 0 auto;
         }
 
-        /* STILURI NOI PENTRU CARDURI DOCTORI */
         .doctor-card { 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: 1px solid #e2e8f0;
@@ -94,19 +93,18 @@
             <button id="nav-doctori" onclick="showSection('doctori')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-user-md mr-3"></i>3. Administrare Doctori</button>
             <button id="nav-istoric" onclick="showSection('istoric')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-notes-medical mr-3"></i>4. Istoric Tratamente</button>
             <button id="nav-imagini" onclick="showSection('imagini')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-image mr-3"></i>5. Imagini Medicale</button>
-            <button id="nav-administrare" onclick="showSection('administrare')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition bg-red-600 text-white hover:bg-red-700 mt-4"><i class="fas fa-user-plus mr-3"></i>6. Adaugă Pacient</button>
+            <button id="nav-educatie" onclick="showSection('educatie')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-book-medical mr-3"></i>6. Educație & Resurse</button>
+            <button id="nav-administrare" onclick="showSection('administrare')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition bg-red-600 text-white hover:bg-red-700 mt-4"><i class="fas fa-user-plus mr-3"></i>Adaugă Pacient</button>
         </nav>
 
         <div id="content-container">
+            
             <div id="detalii-section" class="hidden">
                 <div class="bg-white p-6 rounded-2xl card mb-8">
                     <h2 class="text-3xl font-black text-indigo-900 mb-2">Echipa Medicală PUGULET</h2>
                     <p class="text-gray-500 italic">Specialiști dedicați sănătății zâmbetului copilului tău.</p>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="hero-doctor-grid">
-                    </div>
-
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="hero-doctor-grid"></div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-gray-700">
                     <div class="bg-white p-6 rounded-2xl card">
                         <h3 class="font-bold text-indigo-800 mb-4 border-b pb-2"><i class="fas fa-map-marker-alt mr-2"></i>Date Contact</h3>
@@ -115,14 +113,12 @@
                         <p><strong>Email:</strong> info@pugulet.ro</p>
                     </div>
                     <div class="bg-white p-6 rounded-2xl card">
-                        <h3 class="font-bold text-indigo-800 mb-4 border-b pb-2"><i class="fas fa-tag mr-2"></i>Tarife Cabinet</h3>
+                        <h3 class="font-bold text-indigo-800 mb-4 border-b pb-2"><i class="fas fa-tag mr-2"></i>Tarife Exemplu</h3>
                         <div class="space-y-2 text-xs">
                             <div class="flex justify-between"><span>Consultație Pedodonție</span><span class="font-bold">250 RON</span></div>
                             <div class="flex justify-between"><span>Extractie dinte temporar</span><span class="font-bold">150-200 RON</span></div>
-							<div class="flex justify-between"><span>Inhalosedare (30 min)</span><span class="font-bold">200 - 450 RON</span></div>
-							<div class="flex justify-between"><span>Sigilare Șanțuri</span><span class="font-bold">150 - 200 RON / dinte</span></div>
-							<div class="flex justify-between"><span>Obturație (plombă)</span><span class="font-bold">220 - 400 RON</span></div>
-							<div class="flex justify-between"><span>parat Dentar Mobil / arcadă</span><span class="font-bold">1100-2000 EURO</span></div>
+                            <div class="flex justify-between"><span>Inhalosedare (30 min)</span><span class="font-bold">200 - 450 RON</span></div>
+                            <div class="flex justify-between"><span>Sigilare Șanțuri</span><span class="font-bold">150 - 200 RON / dinte</span></div>
                         </div>
                     </div>
                 </div>
@@ -136,26 +132,52 @@
                 </div>
             </div>
 
-            <div id="doctori-section" class="hidden bg-white p-6 rounded-2xl card">
-                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Gestiune Doctori (Tabel)</h2>
-                <div class="table-container">
-                    <table id="doctoriTabel" class="min-w-full divide-y divide-gray-200 sticky-header"><thead class="bg-gray-100"></thead><tbody></tbody></table>
-                </div>
-            </div>
-
-            <div id="istoric-section" class="hidden bg-white p-6 rounded-2xl card">
-                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Istoric Tratamente</h2>
-                <div class="table-container">
-                    <table id="istoricTabel" class="min-w-full divide-y divide-gray-200 sticky-header"><thead class="bg-gray-100"></thead><tbody></tbody></table>
-                </div>
-            </div>
-
             <div id="imagini-section" class="hidden bg-white p-6 rounded-2xl card">
-                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Imagini Medicale</h2>
+                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Imagini Medicale Pacienți</h2>
+                <p class="text-gray-500 mb-4">Aici vor apărea radiografiile și fotografiile clinice încărcate pentru fiecare pacient.</p>
                 <div class="table-container">
                     <table id="imaginiTabel" class="min-w-full divide-y divide-gray-200 sticky-header"><thead class="bg-gray-100"></thead><tbody></tbody></table>
                 </div>
             </div>
+
+            <div id="educatie-section" class="hidden bg-white p-6 rounded-2xl card">
+    <h2 class="text-2xl font-semibold text-indigo-800 mb-6 border-b pb-2">Tur Virtual & Resurse Clinice</h2>
+    
+    <h3 class="text-lg font-bold text-gray-700 mb-4"><i class="fas fa-clinic-medical mr-2"></i>Cabinetul Nostru</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+        <div class="group relative overflow-hidden rounded-xl shadow-md border border-gray-100">
+            <img src="fig5.png" alt="Sala de tratament" class="w-full h-48 object-cover transition transform group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+                <span class="text-white text-xs font-medium">Unitate de tratament modernă</span>
+            </div>
+        </div>
+        <div class="group relative overflow-hidden rounded-xl shadow-md border border-gray-100">
+            <img src="fig4.png" alt="Sala de asteptare" class="w-full h-48 object-cover transition transform group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+                <span class="text-white text-xs font-medium">Zonă de relaxare pacienți</span>
+            </div>
+        </div>
+        <div class="group relative overflow-hidden rounded-xl shadow-md border border-gray-100">
+            <img src="fig3.png" alt="Echipament medical" class="w-full h-48 object-cover transition transform group-hover:scale-110">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
+                <span class="text-white text-xs font-medium">Tehnologie de ultimă generație</span>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="text-lg font-bold text-gray-700 mb-4 border-t pt-6"><i class="fas fa-tooth mr-2"></i>Ghid Vizual: Dentiția Permanentă</h3>
+    <div class="flex flex-col items-center">
+        <img src="fig1.jpg" alt="Dentiția Umană Permanentă" class="rounded-xl shadow-2xl border-4 border-indigo-50 max-w-4xl w-full mb-6">
+        
+        <div class="bg-indigo-50 p-6 rounded-xl text-indigo-900 w-full">
+            <h4 class="font-bold mb-2 text-sm"><i class="fas fa-info-circle mr-2"></i> Utilizare Clinică:</h4>
+            <p class="text-xs leading-relaxed">
+                Această diagramă prezintă numerotarea standard a dinților permanenți (sistemul FDI). 
+                Este utilizată pentru a identifica precis localizarea tratamentelor în fișa digitală a pacientului.
+            </p>
+        </div>
+    </div>
+</div>
 
             <div id="administrare-section" class="hidden">
                 <div class="bg-white p-6 rounded-2xl card max-w-2xl mx-auto">
@@ -164,26 +186,24 @@
                         <div><label class="block text-sm font-medium">Nume:</label><input type="text" id="nume" required class="w-full rounded-md border p-2"></div>
                         <div><label class="block text-sm font-medium">Telefon:</label><input type="tel" id="telefon" required class="w-full rounded-md border p-2"></div>
                         <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-md font-semibold">Înregistrează</button>
-                        <div id="form-message" class="hidden mt-4 p-3 rounded-md text-center"></div>
                     </form>
                 </div>
             </div>
+
+            <div id="doctori-section" class="hidden bg-white p-6 rounded-2xl card"><h2 class="text-2xl font-bold">Gestiune Doctori</h2><div id="doctoriTabel"></div></div>
+            <div id="istoric-section" class="hidden bg-white p-6 rounded-2xl card"><h2 class="text-2xl font-bold">Istoric Tratamente</h2><div id="istoricTabel"></div></div>
+
         </div>
     </div>
 
     <script>
         const API_BASE = 'http://127.0.0.1:5000/api/';
 
-        // DATE PENTRU CARDURILE DIN PAGINA PRINCIPALA
         const DOCTORI_PREZENTARE = [
-    { nume: "Dr. Popescu Ana", spec: "Medic Pedodont", moto: "„Zâmbetul copiilor este cea mai mare satisfacție.”", img: "doctor1.jpg", color: "text-pink-600", icon: "fa-venus" },
-    { nume: "Dr. Popa Andrei", spec: "Chirurg Oro-Maxilo", moto: "„Excelență și precizie în fiecare intervenție.”", img: "doctor7.jpg", color: "text-blue-700", icon: "fa-tooth" },
-    { nume: "Dr. Ionescu Maria", spec: "Ortodont Specialist", moto: "„Creăm armonii faciale prin aliniere perfectă.”", img: "doctor3.jpg", color: "text-purple-600", icon: "fa-magic" },
-    { nume: "Dr. Stolan Cristian", spec: "Implantologie Digitală", moto: "„Tehnologie laser pentru rezultate durabile.”", img: "doctor6.jpg", color: "text-indigo-600", icon: "fa-microscope" },
-    { nume: "Dr. Zamfir Elena", spec: "Terapie Restaurativă", moto: "„Conservăm sănătatea prin metode minim invazive.”", img: "doctor8.jpg", color: "text-green-600", icon: "fa-leaf" },
-    { nume: "Dr. Vasilescu Radu", spec: "Radiologie Dentară", moto: "„Claritate maximă pentru un diagnostic corect.”", img: "doctor4.jpg", color: "text-orange-600", icon: "fa-x-ray" },
-    { nume: "Dr. Gheorghe Alexandra", spec: "Profilaxie & Igienă", moto: "„Prevenția este cheia unui zâmbet sănătos.”", img: "doctor5.jpg", color: "text-red-500", icon: "fa-heart" }
-];
+            { nume: "Dr. Popescu Ana", spec: "Medic Pedodont", moto: "„Zâmbetul copiilor este cea mai mare satisfacție.”", img: "doctor1.jpg", color: "text-pink-600" },
+            { nume: "Dr. Popa Andrei", spec: "Chirurg Oro-Maxilo", moto: "„Excelență și precizie în fiecare intervenție.”", img: "doctor7.jpg", color: "text-blue-700" },
+            { nume: "Dr. Ionescu Maria", spec: "Ortodont Specialist", moto: "„Creăm armonii faciale prin aliniere perfectă.”", img: "doctor3.jpg", color: "text-purple-600" }
+        ];
 
         function renderHeroDoctori() {
             const grid = document.getElementById('hero-doctor-grid');
@@ -191,7 +211,7 @@
             grid.innerHTML = DOCTORI_PREZENTARE.map(doc => `
                 <div class="doctor-card rounded-[2rem] p-6 text-center">
                     <div class="avatar-container">
-                        <img src="${doc.img}" class="avatar-img">
+                        <img src="${doc.img}" class="avatar-img" onerror="this.src='https://via.placeholder.com/100'">
                         <div class="specialization-badge"><i class="fas fa-tooth"></i></div>
                     </div>
                     <h3 class="text-lg font-bold text-gray-800">${doc.nume}</h3>
@@ -202,9 +222,13 @@
         }
 
         async function showSection(sectionId) {
+            // Ascunde toate sectiunile
             document.querySelectorAll('#content-container > div').forEach(div => div.classList.add('hidden'));
-            document.getElementById(`${sectionId}-section`).classList.remove('hidden');
+            // Afiseaza sectiunea ceruta
+            const activeSection = document.getElementById(`${sectionId}-section`);
+            if(activeSection) activeSection.classList.remove('hidden');
 
+            // Actualizare butoane meniu
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active-nav');
                 if (btn.id !== 'nav-administrare') {
@@ -212,17 +236,13 @@
                 }
             });
 
-            if (sectionId !== 'administrare') {
-                document.getElementById(`nav-${sectionId}`).classList.add('active-nav');
-            }
+            const activeBtn = document.getElementById(`nav-${sectionId}`);
+            if (activeBtn) activeBtn.classList.add('active-nav');
 
-            // Incarcare date tabele
+            // Incarcare date daca e cazul
             if (sectionId === 'pacienti') {
                 const data = await fetchData('pacienti');
-                generateTable('pacientiTabel', data, [{key:'_id', label:'ID'}, {key:'nume_complet', label:'Nume'}, {key:'numar_telefon', label:'Telefon'}]);
-            } else if (sectionId === 'doctori') {
-                const data = await fetchData('doctori');
-                generateTable('doctoriTabel', data, [{key:'_id', label:'ID'}, {key:'nume_complet', label:'Nume'}, {key:'specializare', label:'Specializare'}]);
+                generateTable('pacientiTabel', data, [{key:'nume_complet', label:'Nume'}, {key:'numar_telefon', label:'Telefon'}]);
             }
         }
 
@@ -230,10 +250,12 @@
             const container = document.getElementById(containerId);
             const thead = container.querySelector('thead');
             const tbody = container.querySelector('tbody');
+            if(!thead || !tbody) return;
             thead.innerHTML = `<tr>${headers.map(h => `<th class="px-4 py-3 text-left text-sm text-indigo-700 uppercase">${h.label}</th>`).join('')}</tr>`;
-            tbody.innerHTML = data.length ? data.map((item, i) => `<tr class="${i%2===0?'bg-white':'bg-gray-50'} border-b">
-                ${headers.map(h => `<td class="px-4 py-2 text-sm">${item[h.key] || '-'}</td>`).join('')}
-            </tr>`).join('') : '<tr><td colspan="5" class="p-4 text-center">Fără date</td></tr>';
+            tbody.innerHTML = data.length ? data.map((item, i) => `
+                <tr class="${i%2===0?'bg-white':'bg-gray-50'} border-b">
+                    ${headers.map(h => `<td class="px-4 py-2 text-sm">${item[h.key] || '-'}</td>`).join('')}
+                </tr>`).join('') : '<tr><td colspan="5" class="p-4 text-center">Fără date disponibile</td></tr>';
         }
 
         async function fetchData(endpoint) {
@@ -250,4 +272,3 @@
     </script>
 </body>
 </html>
-
