@@ -3,272 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartDenta Hub - Administrare Clinică</title>
+    <title>SmartDenta Hub | Premium Dental Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f0f7ff; } 
-        .card { box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); transition: transform 0.3s ease; }
-        .table-container { max-height: 60vh; overflow-y: auto; }
-        .sticky-header thead { position: sticky; top: 0; z-index: 10; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; color: #1e293b; scroll-behavior: smooth; }
+        .hero-gradient { background: radial-gradient(circle at top right, #4f46e5, #1e1b4b); }
+        .sidebar-gradient { background: linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%); }
+        .glass-card { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-radius: 32px; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05); }
+        .nav-link { transition: all 0.2s ease; border-radius: 16px; color: #94a3b8; cursor: pointer; margin-bottom: 4px; }
+        .nav-link:hover { background: rgba(255,255,255,0.1); color: white; }
+        .nav-link.active-nav { background: #4f46e5; color: white; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
+        .animate-fade-up { animation: fadeUp 0.6s ease-out forwards; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #auth-modal { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); }
         
-        .nav-btn {
-            background-color: #e5e7eb;
-            color: #4b5563;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-            display: flex;
-            align-items: center;
-        }
-        .nav-btn.active-nav {
-            background-color: #4338ca;
-            color: white; 
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2);
-        }
+        /* Stiluri pentru Accordion Tarife */
+        details summary::-webkit-details-marker { display: none; }
+        summary { list-style: none; }
 
-        .dashboard-layout {
-            display: grid;
-            grid-template-columns: 256px 1fr; 
-            gap: 2rem; 
-            max-width: 1280px; 
-            margin: 0 auto;
+        /* Stiluri Schema Dentară Interactivă */
+        .tooth-wrapper { cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .tooth-path { fill: #fcf9f2; stroke: #b89574; stroke-width: 1.5; transition: all 0.3s ease-out; }
+        .tooth-lines { stroke: #b89574; stroke-width: 1; opacity: 0.4; transition: all 0.3s; }
+        .tooth-svg-container { transition: transform 0.3s; }
+        .tooth-wrapper:hover .tooth-path { 
+            fill: #ffffff; 
+            stroke: var(--hex) !important; 
+            stroke-width: 2.5; 
+            filter: drop-shadow(0px 8px 12px var(--hex-shadow)); 
         }
-
-        .doctor-card { 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid #e2e8f0;
-            background: white;
-        }
-        .doctor-card:hover { 
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
-            border-color: #4338ca;
-        }
-        .avatar-container {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 1rem;
-        }
-        .avatar-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #EEF2FF;
-        }
-        .specialization-badge {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #4338ca;
-            color: white;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            border: 2px solid white;
-        }
+        .tooth-wrapper:hover .tooth-lines { stroke: var(--hex) !important; opacity: 0.9; }
+        .upper-jaw .tooth-wrapper:hover .tooth-svg-container { transform: translateY(-8px); }
+        .lower-jaw .tooth-wrapper:hover .tooth-svg-container { transform: translateY(8px); }
     </style>
 </head>
-<body class="min-h-screen p-4 sm:p-10">
+<body class="min-h-screen">
 
-    <div class="max-w-7xl mx-auto">
-        <header class="text-center mb-10">
-            <h1 class="text-xl sm:text-6xl font-extrabold text-red-700 tracking-tight">
-                <i class="fas fa-tooth text-red-700 mr-2"></i> <b>SMARTDENTA HUB</b>
-            </h1>
-            <p class="text-2xl text-indigo-600 mt-1"><b>PLATFORMA TA DE SUCCES STOMATOLOGIC</b></p>
+    <div id="auth-modal" class="fixed inset-0 z-[500] hidden flex items-center justify-center p-6">
+        <div class="bg-white w-full max-w-sm p-10 rounded-[48px] shadow-2xl text-center animate-fade-up">
+            <div class="bg-indigo-100 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <i class="fas fa-fingerprint text-indigo-600 text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-black mb-2 text-slate-800 tracking-tight">Acces Securizat</h3>
+            <p class="text-slate-500 text-sm mb-8">Introduceți parola pentru Gestiune.</p>
+            <input type="password" id="admin-password" class="w-full bg-slate-50 border-2 border-slate-100 focus:border-indigo-500 p-5 rounded-2xl outline-none mb-4 text-center font-bold tracking-[0.6em]" placeholder="••••">
+            <div class="flex gap-4">
+                <button onclick="closeAuthModal()" class="flex-1 text-slate-400 py-4 font-bold text-sm uppercase tracking-widest">Anulează</button>
+                <button onclick="checkPassword()" class="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-sm shadow-xl uppercase tracking-widest">Log In</button>
+            </div>
+            <p id="auth-error" class="text-red-500 text-xs mt-6 font-bold hidden italic">Parolă incorectă.</p>
+        </div>
+    </div>
+
+    <div id="public-view">
+        <header class="hero-gradient text-white py-32 px-6 text-center relative overflow-hidden">
+            <div class="max-w-4xl mx-auto relative z-10">
+                <div class="inline-block bg-white/10 p-4 rounded-[24px] mb-8 backdrop-blur-xl border border-white/20">
+                    <i class="fas fa-tooth text-4xl text-indigo-200"></i>
+                </div>
+                <h1 class="text-6xl md:text-8xl font-black mb-8 tracking-tighter animate-fade-up">SmartDenta<span class="text-indigo-400">Hub</span></h1>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#prezentare" class="bg-white text-indigo-900 px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Despre</a>
+                    <a href="#ghid-vizual" class="bg-indigo-400 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Ghid Vizual</a>
+                    <a href="#echipa" class="bg-indigo-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Medici</a>
+                    <a href="#tarife" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Tarife</a>
+                    <button onclick="openAuthModal()" class="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-2xl font-bold border border-white/20 hover:bg-white/20 transition text-xs uppercase tracking-widest">Admin</button>
+                </div>
+            </div>
         </header>
-    </div>
 
-    <div class="dashboard-layout p-4 sm:p-0"> 
-        <nav class="flex flex-col justify-start gap-3">
-            <span class="text-xl font-bold text-indigo-800 self-start mb-2">ACCES RAPID:</span>
-            <button id="nav-detalii" onclick="showSection('detalii')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-info-circle mr-3"></i>1. Detalii & Echipa</button>
-            <button id="nav-pacienti" onclick="showSection('pacienti')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-users mr-3"></i>2. Pacienți</button>
-            <button id="nav-doctori" onclick="showSection('doctori')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-user-md mr-3"></i>3. Administrare Doctori</button>
-            <button id="nav-istoric" onclick="showSection('istoric')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-notes-medical mr-3"></i>4. Istoric Tratamente</button>
-            <button id="nav-imagini" onclick="showSection('imagini')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-image mr-3"></i>5. Imagini Medicale</button>
-            <button id="nav-educatie" onclick="showSection('educatie')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition"><i class="fas fa-book-medical mr-3"></i>6. Educație & Resurse</button>
-            <button id="nav-administrare" onclick="showSection('administrare')" class="nav-btn w-full text-left px-4 py-3 font-semibold transition bg-red-600 text-white hover:bg-red-700 mt-4"><i class="fas fa-user-plus mr-3"></i>Adaugă Pacient</button>
-        </nav>
-
-        <div id="content-container">
-            
-            <div id="detalii-section" class="hidden">
-                <div class="bg-white p-6 rounded-2xl card mb-8">
-                    <h2 class="text-3xl font-black text-indigo-900 mb-2">Echipa Medicală PUGULET</h2>
-                    <p class="text-gray-500 italic">Specialiști dedicați sănătății zâmbetului copilului tău.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8" id="hero-doctor-grid"></div>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 text-gray-700">
-                    <div class="bg-white p-6 rounded-2xl card">
-                        <h3 class="font-bold text-indigo-800 mb-4 border-b pb-2"><i class="fas fa-map-marker-alt mr-2"></i>Date Contact</h3>
-                        <p class="mb-2"><strong>Adresă:</strong> Sector 3, București</p>
-                        <p class="mb-2"><strong>Telefon:</strong> 0728589684</p>
-                        <p><strong>Email:</strong> info@pugulet.ro</p>
+        <section id="prezentare" class="py-32 px-6 max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-20 items-center">
+                <div class="animate-fade-up space-y-10">
+                    <div>
+                        <h2 class="text-indigo-600 font-bold uppercase tracking-[0.2em] text-sm mb-5">Smart Clinic</h2>
+                        <h3 class="text-5xl md:text-6xl font-black text-slate-800 tracking-tighter leading-tight mb-8 italic">Stomatologie de <span class="text-indigo-600 italic">Viitor</span></h3>
+                        <p class="text-slate-600 leading-relaxed text-xl text-justify opacity-90 max-w-2xl">SmartDenta Hub utilizează tehnologia <strong>CouchDB</strong> pentru a stoca istoricul tău medical în siguranță, oferindu-ți acces instant la planul tău de tratament digital.</p>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl card">
-                        <h3 class="font-bold text-indigo-800 mb-4 border-b pb-2"><i class="fas fa-tag mr-2"></i>Tarife Exemplu</h3>
-                        <div class="space-y-2 text-xs">
-                            <div class="flex justify-between"><span>Consultație Pedodonție</span><span class="font-bold">250 RON</span></div>
-                            <div class="flex justify-between"><span>Extractie dinte temporar</span><span class="font-bold">150-200 RON</span></div>
-                            <div class="flex justify-between"><span>Inhalosedare (30 min)</span><span class="font-bold">200 - 450 RON</span></div>
-                            <div class="flex justify-between"><span>Sigilare Șanțuri</span><span class="font-bold">150 - 200 RON / dinte</span></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-8">
+                        <div class="flex items-center gap-5 transform hover:scale-105 transition"><div class="bg-indigo-100 p-4 rounded-2xl text-indigo-600 text-xl"><i class="fas fa-microscope"></i></div><span class="font-bold text-slate-700 text-lg">Chirurgie Ghidată</span></div>
+                        <div class="flex items-center gap-5 transform hover:scale-105 transition"><div class="bg-emerald-100 p-4 rounded-2xl text-emerald-600 text-xl"><i class="fas fa-teeth"></i></div><span class="font-bold text-slate-700 text-lg">Scanare 3D</span></div>
+                        <div class="flex items-center gap-5 transform hover:scale-105 transition"><div class="bg-pink-100 p-4 rounded-2xl text-pink-600 text-xl"><i class="fas fa-shield-alt"></i></div><span class="font-bold text-slate-700 text-lg">Fără Durere</span></div>
+                        <div class="flex items-center gap-5 transform hover:scale-105 transition"><div class="bg-amber-100 p-4 rounded-2xl text-amber-600 text-xl"><i class="fas fa-clock"></i></div><span class="font-bold text-slate-700 text-lg">Rapiditate</span></div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-5 h-[600px] items-start">
+                    <div class="relative group row-span-2 aspect-square overflow-hidden rounded-[40px] shadow-2xl border-4 border-white">
+                        <img src="fig5.png" class="w-full h-full object-cover transition-transform group-hover:scale-[1.03] duration-500">
+                    </div>
+                    <div class="relative group h-[290px] rounded-[30px] shadow-xl overflow-hidden border-4 border-white">
+                        <img src="fig3.png" class="w-full h-full object-cover transition-transform group-hover:scale-[1.05]">
+                    </div>
+                    <div class="relative group h-[290px] rounded-[30px] shadow-xl overflow-hidden border-4 border-white">
+                        <img src="fig4.png" class="w-full h-full object-cover transition-transform group-hover:scale-[1.05]">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ghid-vizual" class="py-24 px-6 bg-white overflow-x-hidden text-center border-t border-slate-50">
+            <h2 class="text-4xl font-black mb-4 uppercase italic tracking-widest text-slate-800">Ghid Vizual</h2>
+            <p class="text-slate-500 mb-16 font-medium italic">Interacționează cu schema dentară FDI</p>
+            <div class="overflow-x-auto pb-10" id="dentition-container"></div>
+        </section>
+		
+        <section id="echipa" class="py-24 px-6 bg-slate-50">
+            <div class="max-w-6xl mx-auto text-center">
+                <h2 class="text-4xl font-black mb-16 uppercase italic">Echipa Noastră Medicală</h2>
+                <div id="staff-grid" class="grid md:grid-cols-3 gap-10">
+                    </div>
+            </div>
+        </section>
+
+        <section id="tarife" class="py-24 px-6 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-black mb-12 text-center uppercase italic">Tarife</h2>
+                <div class="space-y-4">
+                    <details class="group bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden" open>
+                        <summary class="flex items-center justify-between p-6 cursor-pointer group-open:bg-indigo-600 group-open:text-white transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500 text-white p-2 rounded-lg group-open:bg-white group-open:text-indigo-600"><i class="fas fa-user-shield"></i></div>
+                                <span class="font-black uppercase tracking-widest text-sm italic">Profilaxie</span>
+                            </div>
+                            <i class="fas fa-plus group-open:rotate-45 transition-transform"></i>
+                        </summary>
+                        <div class="p-6">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100">
+                                    <tr><th class="pb-3 text-slate-400">Tratament</th><th class="pb-3 text-right text-slate-400">Preț</th></tr>
+                                </thead>
+                                <tbody class="text-sm font-bold text-slate-600 divide-y divide-slate-50">
+                                    <tr><td class="py-4 text-slate-600 font-medium">Consultație simplă</td><td class="py-4 text-right text-indigo-600">100 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Consultație primară</td><td class="py-4 text-right text-indigo-600">150 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Ședință completă profilaxie copii</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Gutieră bruxism tehnică digitalizată</td><td class="py-4 text-right text-indigo-600">800 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Sedinta completa de profilaxie adulti (detartraj, periaj, intructaj igiena)</td><td class="py-4 text-right text-indigo-600">300 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Gutiera  fluorizare/desensibilizare</td><td class="py-4 text-right text-indigo-600">350 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Albire interna/ dinte- max 3 sedinte</td><td class="py-4 text-right text-indigo-600">500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Gutiera albire/arcada</td><td class="py-4 text-right text-indigo-600">350 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Gutiera bruxism/arcada</td><td class="py-4 text-right text-indigo-600">600 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Sedinta completa de Profilaxie air flow, perio flow implanturi si Piezon by EMS Airf Flow&Profylaxis Master	</td><td class="py-4 text-right text-indigo-600">450 Lei</td></tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
+                    </details>
+
+                    <details class="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <summary class="flex items-center justify-between p-6 cursor-pointer bg-slate-100 transition-all hover:bg-slate-200 group-open:bg-indigo-600 group-open:text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500 text-white p-2 rounded-lg group-open:bg-white group-open:text-indigo-600">
+                                    <i class="fas fa-tooth"></i>
+                                </div>
+                                <span class="font-black uppercase tracking-widest text-sm">ODONTOTERAPIE</span>
+                            </div>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 group-open:bg-white/20 group-open:text-white transition-transform duration-300">
+                                <i class="fas fa-plus group-open:rotate-45"></i>
+                            </div>
+                        </summary>
+                        <div class="p-6">
+                             <table class="w-full text-left">
+                                <tbody class="text-sm font-bold text-slate-600 divide-y divide-slate-50">
+                                    <tr><td class="py-4 text-slate-600 font-medium">Obturatie fizionomica compozit simpla</td><td class="py-4 text-right text-indigo-600">300 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Obturatie fizionomica compozit complexa</td><td class="py-4 text-right text-indigo-600">350 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Obturatie fizionomica dinti frontali</td><td class="py-4 text-right text-indigo-600">350 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Fateta din compozit direct</td><td class="py-4 text-right text-indigo-600">500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Ablatie amalgam</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Coafaj</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Reconstructie coronara cu pivot din fibra de sticla</td><td class="py-4 text-right text-indigo-600">400 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Reconfigurare coronara estetica</td><td class="py-4 text-right text-indigo-600">400 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Inchidere Spatiu</td><td class="py-4 text-right text-indigo-600">500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Adaugare/lipire stras pe dinte </td><td class="py-4 text-right text-indigo-600">300 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Anestezie</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+					<details class="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" open>
+                        <summary class="flex items-center justify-between p-6 cursor-pointer bg-slate-100 transition-all group-open:bg-indigo-600 group-open:text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500 text-white p-2 rounded-lg group-open:bg-white group-open:text-indigo-600">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="font-black uppercase tracking-widest text-sm">PROTETICA</span>
+                            </div>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 group-open:bg-white/20 group-open:text-white transition-transform duration-300">
+                                <i class="fas fa-plus group-open:rotate-45"></i>
+                            </div>
+                        </summary>
+                        <div class="p-6">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100">
+                                    <tr><th class="pb-3 text-slate-400">Tratament</th><th class="pb-3 text-right text-slate-400">Preț</th></tr>
+                                </thead>
+                                <tbody class="text-sm font-bold text-slate-600 divide-y divide-slate-50">
+                                    <tr><td class="py-4 text-slate-600 font-medium">Coroana metalo - CERAMICA total fizionomica</td><td class="py-4 text-right text-indigo-600">900 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Coroana zirconiu CAD/CAM Monolitic</td><td class="py-4 text-right text-indigo-600">1500 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Coroana ceramica pe suport de zirconiu</td><td class="py-4 text-right text-indigo-600">1500 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Coroana PMMA estetic</td><td class="py-4 text-right text-indigo-600">450 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Coroana provizorie cabinet</td><td class="py-4 text-right text-indigo-600">300 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Ablatie coroana zirconiu</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Ablatie coroana conjuncta</td><td class="py-4 text-right text-indigo-600">100 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Cimentare coroana metalo-ceramica/dinte</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Cimentare coroana zirconiu-ceramica/element</td><td class="py-4 text-right text-indigo-600">100 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Coroana zirconiu monolitic</td><td class="py-4 text-right text-indigo-600">1500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Coroana ceramica</td><td class="py-4 text-right text-indigo-600">3500 Lei</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+					<details class="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" open>
+                        <summary class="flex items-center justify-between p-6 cursor-pointer bg-slate-100 transition-all group-open:bg-indigo-600 group-open:text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500 text-white p-2 rounded-lg group-open:bg-white group-open:text-indigo-600">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="font-black uppercase tracking-widest text-sm">PEDODONTIE</span>
+                            </div>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 group-open:bg-white/20 group-open:text-white transition-transform duration-300">
+                                <i class="fas fa-plus group-open:rotate-45"></i>
+                            </div>
+                        </summary>
+                        <div class="p-6">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100">
+                                    <tr><th class="pb-3 text-slate-400">Tratament</th><th class="pb-3 text-right text-slate-400">Preț</th></tr>
+                                </thead>
+                                <tbody class="text-sm font-bold text-slate-600 divide-y divide-slate-50">
+                                    <tr><td class="py-4 text-slate-600 font-medium">Consultatie pedodontie</td><td class="py-4 text-right text-indigo-600">100 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Obturatie compozit fotopolimerizabil dinte temporar</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Obturatie ciment ionomer de sticla</td><td class="py-4 text-right text-indigo-600">150 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Extirpare devitala copii</td><td class="py-4 text-right text-indigo-600">250 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Reaplicare pansament devitalizant</td><td class="py-4 text-right text-indigo-600">70 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Sigilare simpla molari permanenti</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Extractie dinte de lapte/temporar</td><td class="py-4 text-right text-indigo-600">150 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Sigilare largita molari permanenti </td><td class="py-4 text-right text-indigo-600">250 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Periaj profesional copii</td><td class="py-4 text-right text-indigo-600">150 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Anestezie</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+								</tbody>
+                            </table>
+                        </div>
+                    </details>
+					<details class="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" open>
+                        <summary class="flex items-center justify-between p-6 cursor-pointer bg-slate-100 transition-all group-open:bg-indigo-600 group-open:text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500 text-white p-2 rounded-lg group-open:bg-white group-open:text-indigo-600">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="font-black uppercase tracking-widest text-sm">ORTODONTIE</span>
+                            </div>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 group-open:bg-white/20 group-open:text-white transition-transform duration-300">
+                                <i class="fas fa-plus group-open:rotate-45"></i>
+                            </div>
+                        </summary>
+                        <div class="p-6">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100">
+                                    <tr><th class="pb-3 text-slate-400">Tratament</th><th class="pb-3 text-right text-slate-400">Preț</th></tr>
+                                </thead>
+                                <tbody class="text-sm font-bold text-slate-600 divide-y divide-slate-50">
+                                    <tr><td class="py-4 text-slate-600 font-medium">Consultatie ortodontie</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Scanare intraorala bimaxilara + ocluzie</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Control evolutie tratament: - aparat mobil</td><td class="py-4 text-right text-indigo-600">150 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Control evolutie tratament: - aparat fix</td><td class="py-4 text-right text-indigo-600">150 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Control evolutie tratament: - aparat Damon</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Aparat ortodontic fix/arcada - cu bracketi metalici</td><td class="py-4 text-right text-indigo-600">5000 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Aparat ortodontic fix/arcada - cu bracketi de safir</td><td class="py-4 text-right text-indigo-600">6000 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Aparat ortodontic mobil</td><td class="py-4 text-right text-indigo-600">1500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Trainer ortodontic</td><td class="py-4 text-right text-indigo-600">650 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Disjunctor</td><td class="py-4 text-right text-indigo-600">2500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Adaugare element aparat ortodontic mobil</td><td class="py-4 text-right text-indigo-600">450 Lei</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+					<details class="group bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden" open>
+                        <summary class="flex items-center justify-between p-6 cursor-pointer bg-slate-100 transition-all group-open:bg-indigo-600 group-open:text-white">
+                            <div class="flex items-center gap-4">
+                                <div class="bg-indigo-500 text-white p-2 rounded-lg group-open:bg-white group-open:text-indigo-600">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                                <span class="font-black uppercase tracking-widest text-sm">CHIRURGIE</span>
+                            </div>
+                            <div class="w-8 h-8 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 group-open:bg-white/20 group-open:text-white transition-transform duration-300">
+                                <i class="fas fa-plus group-open:rotate-45"></i>
+                            </div>
+                        </summary>
+                        <div class="p-6">
+                            <table class="w-full text-left">
+                                <thead class="text-[10px] font-black uppercase text-slate-400 border-b border-slate-100">
+                                    <tr><th class="pb-3 text-slate-400">Tratament</th><th class="pb-3 text-right text-slate-400">Preț</th></tr>
+                                </thead>
+                                <tbody class="text-sm font-bold text-slate-600 divide-y divide-slate-50">
+                                    <tr><td class="py-4 text-slate-600 font-medium">Consultatie chirurgie</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Anestezie</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Sutural</td><td class="py-4 text-right text-indigo-600">50 Lei</td></tr>
+                                    <tr><td class="py-4 text-slate-600 font-medium">Decapusonare</td><td class="py-4 text-right text-indigo-600">250 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Drenaj abces</td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Chiuretaj in camp deschis/dinte </td><td class="py-4 text-right text-indigo-600">200 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Chistectomie</td><td class="py-4 text-right text-indigo-600">250-1500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Reconstructie creasta osoasa</td><td class="py-4 text-right text-indigo-600">1500 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Extractie molar de minte - erupt complet </td><td class="py-4 text-right text-indigo-600">350 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Extractie molar de minte - chirurgicala</td><td class="py-4 text-right text-indigo-600">650 Lei</td></tr>
+									<tr><td class="py-4 text-slate-600 font-medium">Extractie molar de minte - inclus</td><td class="py-4 text-right text-indigo-600">750 Lei</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
                 </div>
             </div>
-
-            <div id="pacienti-section" class="hidden bg-white p-6 rounded-2xl card">
-                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Lista Pacienților</h2>
-                <input type="text" id="pacient-search" onkeyup="filterTable('pacientiTabel', this.value)" placeholder="Caută pacient..." class="mb-4 block w-full rounded-md border-gray-300 p-2 border">
-                <div class="table-container">
-                    <table id="pacientiTabel" class="min-w-full divide-y divide-gray-200 sticky-header"><thead class="bg-gray-100"></thead><tbody></tbody></table>
-                </div>
-            </div>
-
-            <div id="imagini-section" class="hidden bg-white p-6 rounded-2xl card">
-                <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Imagini Medicale Pacienți</h2>
-                <p class="text-gray-500 mb-4">Aici vor apărea radiografiile și fotografiile clinice încărcate pentru fiecare pacient.</p>
-                <div class="table-container">
-                    <table id="imaginiTabel" class="min-w-full divide-y divide-gray-200 sticky-header"><thead class="bg-gray-100"></thead><tbody></tbody></table>
-                </div>
-            </div>
-
-            <div id="educatie-section" class="hidden bg-white p-6 rounded-2xl card">
-    <h2 class="text-2xl font-semibold text-indigo-800 mb-6 border-b pb-2">Tur Virtual & Resurse Clinice</h2>
-    
-    <h3 class="text-lg font-bold text-gray-700 mb-4"><i class="fas fa-clinic-medical mr-2"></i>Cabinetul Nostru</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
-        <div class="group relative overflow-hidden rounded-xl shadow-md border border-gray-100">
-            <img src="fig5.png" alt="Sala de tratament" class="w-full h-48 object-cover transition transform group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
-                <span class="text-white text-xs font-medium">Unitate de tratament modernă</span>
-            </div>
-        </div>
-        <div class="group relative overflow-hidden rounded-xl shadow-md border border-gray-100">
-            <img src="fig4.png" alt="Sala de asteptare" class="w-full h-48 object-cover transition transform group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
-                <span class="text-white text-xs font-medium">Zonă de relaxare pacienți</span>
-            </div>
-        </div>
-        <div class="group relative overflow-hidden rounded-xl shadow-md border border-gray-100">
-            <img src="fig3.png" alt="Echipament medical" class="w-full h-48 object-cover transition transform group-hover:scale-110">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition flex items-end p-3">
-                <span class="text-white text-xs font-medium">Tehnologie de ultimă generație</span>
-            </div>
-        </div>
+        </section>
     </div>
 
-    <h3 class="text-lg font-bold text-gray-700 mb-4 border-t pt-6"><i class="fas fa-tooth mr-2"></i>Ghid Vizual: Dentiția Permanentă</h3>
-    <div class="flex flex-col items-center">
-        <img src="fig1.jpg" alt="Dentiția Umană Permanentă" class="rounded-xl shadow-2xl border-4 border-indigo-50 max-w-4xl w-full mb-6">
-        
-        <div class="bg-indigo-50 p-6 rounded-xl text-indigo-900 w-full">
-            <h4 class="font-bold mb-2 text-sm"><i class="fas fa-info-circle mr-2"></i> Utilizare Clinică:</h4>
-            <p class="text-xs leading-relaxed">
-                Această diagramă prezintă numerotarea standard a dinților permanenți (sistemul FDI). 
-                Este utilizată pentru a identifica precis localizarea tratamentelor în fișa digitală a pacientului.
-            </p>
-        </div>
-    </div>
-</div>
-
-            <div id="administrare-section" class="hidden">
-                <div class="bg-white p-6 rounded-2xl card max-w-2xl mx-auto">
-                    <h2 class="text-2xl font-semibold text-indigo-800 mb-4 border-b pb-2">Adaugă Pacient Nou</h2>
-                    <form id="add-patient-form" class="space-y-4">
-                        <div><label class="block text-sm font-medium">Nume:</label><input type="text" id="nume" required class="w-full rounded-md border p-2"></div>
-                        <div><label class="block text-sm font-medium">Telefon:</label><input type="tel" id="telefon" required class="w-full rounded-md border p-2"></div>
-                        <button type="submit" class="w-full bg-red-600 text-white py-2 rounded-md font-semibold">Înregistrează</button>
-                    </form>
-                </div>
+    <div id="admin-view" class="hidden flex h-screen overflow-hidden animate-fade-up">
+        <aside class="sidebar-gradient w-80 flex-shrink-0 p-10 flex flex-col text-white">
+            <nav class="flex-grow space-y-2">
+                <button onclick="showSection('pacienti')" id="nav-pacienti" class="nav-link w-full flex items-center gap-4 px-5 py-4 text-sm font-bold">Pacienți</button>
+                <button onclick="showSection('doctori')" id="nav-doctori" class="nav-link w-full flex items-center gap-4 px-5 py-4 text-sm font-bold">Doctori</button>
+                <button onclick="showSection('programari')" class="nav-link w-full flex items-center gap-4 px-5 py-4 text-sm font-bold text-indigo-300">Programări</button>
+            </nav>
+            <button onclick="exitAdmin()" class="mt-auto p-5 text-indigo-300 font-black uppercase text-[11px] border border-white/5 rounded-2xl">Log Out</button>
+        </aside>
+        <main class="flex-grow p-12 bg-slate-50 overflow-y-auto">
+            <h2 id="section-title" class="text-4xl font-black text-slate-800 mb-8 italic">Gestiune</h2>
+            <div id="data-display" class="glass-card p-12 min-h-[600px] border-none shadow-2xl">
+                <table id="universalTable" class="w-full text-left hidden border-collapse text-sm">
+                    <thead class="border-b border-slate-100"><tr id="table-headers" class="font-black uppercase text-indigo-400 pb-8 tracking-widest"></tr></thead>
+                    <tbody id="table-body" class="divide-y divide-slate-50 text-slate-700"></tbody>
+                </table>
             </div>
-
-            <div id="doctori-section" class="hidden bg-white p-6 rounded-2xl card"><h2 class="text-2xl font-bold">Gestiune Doctori</h2><div id="doctoriTabel"></div></div>
-            <div id="istoric-section" class="hidden bg-white p-6 rounded-2xl card"><h2 class="text-2xl font-bold">Istoric Tratamente</h2><div id="istoricTabel"></div></div>
-
-        </div>
+        </main>
     </div>
+
+    <div id="tooltip" class="fixed z-[1000] pointer-events-none w-72 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-100 p-5 transform transition-opacity duration-200 opacity-0" style="top: -1000px; left: -1000px;"></div>
 
     <script>
         const API_BASE = 'http://127.0.0.1:5000/api/';
+        const ADMIN_PASS = "admin123";
 
-        const DOCTORI_PREZENTARE = [
-            { nume: "Dr. Popescu Ana", spec: "Medic Pedodont", moto: "„Zâmbetul copiilor este cea mai mare satisfacție.”", img: "doctor1.jpg", color: "text-pink-600" },
-            { nume: "Dr. Popa Andrei", spec: "Chirurg Oro-Maxilo", moto: "„Excelență și precizie în fiecare intervenție.”", img: "doctor7.jpg", color: "text-blue-700" },
-            { nume: "Dr. Ionescu Maria", spec: "Ortodont Specialist", moto: "„Creăm armonii faciale prin aliniere perfectă.”", img: "doctor3.jpg", color: "text-purple-600" }
+        // Date medici statice pentru public
+        const staffData = [
+            { nume: "Dr. Popescu Ana", spec: "Stomatologie Generală", img: "doctor3.jpg" },
+            { nume: "Dr. Popa Andrei", spec: "Chirurgie Maxilo-Facială", img: "doctor7.jpg" },
+            { nume: "Dr. Ionescu Maria", spec: "Pedodonție", img: "doctor9.jpg" },
+            { nume: "Dr. Stoian Cristian", spec: "Endodonție", img: "doctor4.jpg" },
+            { nume: "Dr. Zamfir Elena", spec: "Parodontologie", img: "doctor5.jpg" },
+            { nume: "Dr. Vasilescu Radu", spec: "Protetică Dentară", img: "doctor6.jpg" },
+            { nume: "Dr. Gheorghe Alexandra", spec: "Implantologie", img: "doctor8.jpg" }
         ];
 
-        function renderHeroDoctori() {
-            const grid = document.getElementById('hero-doctor-grid');
-            if (!grid) return;
-            grid.innerHTML = DOCTORI_PREZENTARE.map(doc => `
-                <div class="doctor-card rounded-[2rem] p-6 text-center">
-                    <div class="avatar-container">
-                        <img src="${doc.img}" class="avatar-img" onerror="this.src='https://via.placeholder.com/100'">
-                        <div class="specialization-badge"><i class="fas fa-tooth"></i></div>
+        // --- Ghid Vizual ---
+        const PATHS = {
+            incisor: "M 15,75 L 17,110 C 18,115 42,115 43,110 L 45,75 C 45,30 35,10 30,10 C 25,10 15,30 15,75 Z",
+            canine: "M 15,75 L 28,115 C 30,120 32,115 35,110 L 45,75 C 45,30 38,10 30,10 C 22,10 15,30 15,75 Z",
+            premolar: "M 12,75 C 12,35 18,10 24,10 C 28,10 30,35 30,50 C 30,35 32,10 36,10 C 42,10 48,35 48,75 C 49,90 45,110 38,110 C 34,110 32,105 30,105 C 28,105 26,110 22,110 C 15,110 11,90 12,75 Z",
+            upperMolar: "M 5,75 C 5,35 10,10 16,10 C 20,10 22,35 22,50 C 22,30 26,15 30,15 C 34,15 38,30 38,50 C 38,35 40,10 44,10 C 50,10 55,35 55,75 C 57,95 50,115 42,115 C 38,115 34,105 30,105 C 26,105 22,115 18,115 C 10,115 3,95 5,75 Z",
+            lowerMolar: "M 8,75 C 8,35 12,10 20,10 C 26,10 28,35 30,55 C 32,35 34,10 40,10 C 48,10 52,35 52,75 C 54,95 48,115 40,115 C 35,115 32,105 30,105 C 28,105 25,115 20,115 C 12,115 6,95 8,75 Z"
+        };
+        const upperGroups = [
+            { name: "molars", hex: "#fb7185", teeth: [18, 17, 16], type: "molar", color: "text-rose-400" },
+            { name: "premolars", hex: "#84cc16", teeth: [15, 14], type: "premolar", color: "text-lime-500" },
+            { name: "canine", hex: "#fb923c", teeth: [13], type: "canine", color: "text-orange-400" },
+            { name: "incisors", hex: "#38bdf8", teeth: [12, 11, 21, 22], type: "incisor", color: "text-sky-400" },
+            { name: "canine", hex: "#fb923c", teeth: [23], type: "canine", color: "text-orange-400" },
+            { name: "premolars", hex: "#84cc16", teeth: [24, 25], type: "premolar", color: "text-lime-500" },
+            { name: "molars", hex: "#fb7185", teeth: [26, 27, 28], type: "molar", color: "text-rose-400" }
+        ];
+        const lowerGroups = [
+            { name: "molars", hex: "#fb7185", teeth: [48, 47, 46], type: "molar", color: "text-rose-400" },
+            { name: "premolars", hex: "#84cc16", teeth: [45, 44], type: "premolar", color: "text-lime-500" },
+            { name: "canine", hex: "#fb923c", teeth: [43], type: "canine", color: "text-orange-400" },
+            { name: "incisors", hex: "#38bdf8", teeth: [42, 41, 31, 32], type: "incisor", color: "text-sky-400" },
+            { name: "canine", hex: "#fb923c", teeth: [33], type: "canine", color: "text-orange-400" },
+            { name: "premolars", hex: "#84cc16", teeth: [34, 35], type: "premolar", color: "text-lime-500" },
+            { name: "molars", hex: "#fb7185", teeth: [36, 37, 38], type: "molar", color: "text-rose-400" }
+        ];
+
+        function createToothSVG(type, jaw) {
+            const isLower = jaw === 'Lower';
+            let pathKey = type === 'molar' ? (isLower ? 'lowerMolar' : 'upperMolar') : type;
+            const transform = isLower ? `transform="rotate(180, 30, 60)"` : '';
+            return `<svg viewBox="0 0 60 120" class="w-10 h-24 md:w-12 md:h-28 overflow-visible"><g ${transform}><path d="${PATHS[pathKey]}" class="tooth-path" /><g fill="none" class="tooth-lines"><path d="M 30,85 L 30,110" /></g></g></svg>`;
+        }
+
+        function renderDentition() {
+            const container = document.getElementById('dentition-container');
+            container.innerHTML = `<div class="flex flex-col items-center gap-8 min-w-[950px]">
+                <div class="flex gap-2 upper-jaw">${upperGroups.map(g => `<div class="flex flex-col items-center px-1"><span class="text-[10px] uppercase font-bold ${g.color} mb-2">${g.name}</span><div class="flex gap-1">${g.teeth.map(id => `<div class="tooth-wrapper" data-id="${id}" style="--hex: ${g.hex}; --hex-shadow: ${g.hex}40;"><span class="text-xs font-bold ${g.color}">${id}</span><div class="tooth-svg-container">${createToothSVG(g.type, 'Upper')}</div></div>`).join('')}</div></div>`).join('')}</div>
+                <div class="flex gap-2 lower-jaw">${lowerGroups.map(g => `<div class="flex flex-col items-center px-1"><div class="flex gap-1">${g.teeth.map(id => `<div class="tooth-wrapper" data-id="${id}" style="--hex: ${g.hex}; --hex-shadow: ${g.hex}40;"><div class="tooth-svg-container">${createToothSVG(g.type, 'Lower')}</div><span class="text-xs font-bold ${g.color}">${id}</span></div>`).join('')}</div><span class="text-[10px] uppercase font-bold ${g.color} mt-2">${g.name}</span></div>`).join('')}</div>
+            </div>`;
+            
+            const tooltip = document.getElementById('tooltip');
+            document.querySelectorAll('.tooth-wrapper').forEach(el => {
+                el.onmouseenter = () => {
+                    tooltip.innerHTML = `<h3 class="font-bold text-indigo-600 text-lg">FDI ${el.dataset.id}</h3><p class="text-xs text-gray-500 uppercase">Ghid Vizual Dentar</p>`;
+                    tooltip.style.opacity = 1;
+                };
+                el.onmouseleave = () => tooltip.style.opacity = 0;
+                el.onmousemove = (e) => { tooltip.style.left = e.clientX + 20 + 'px'; tooltip.style.top = e.clientY + 20 + 'px'; };
+            });
+        }
+
+        // --- Logica Navigare & Admin ---
+        function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+        function checkPassword() { if (document.getElementById('admin-password').value === ADMIN_PASS) { closeAuthModal(); enterAdmin(); } else { document.getElementById('auth-error').classList.remove('hidden'); } }
+        function enterAdmin() { document.getElementById('public-view').classList.add('hidden'); document.getElementById('admin-view').classList.remove('hidden'); showSection('pacienti'); }
+        function exitAdmin() { document.getElementById('admin-view').classList.add('hidden'); document.getElementById('public-view').classList.remove('hidden'); }
+
+        function renderStaff() {
+            document.getElementById('staff-grid').innerHTML = staffData.map(dr => `
+                <div class="glass-card p-10 bg-white border-none shadow-xl hover:-translate-y-2 transition duration-300">
+                    <div class="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-indigo-50 shadow-inner overflow-hidden">
+                        <img src="${dr.img}" class="w-full h-full object-cover" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(dr.nume)}&background=4f46e5&color=fff'">
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800">${doc.nume}</h3>
-                    <p class="text-xs font-bold ${doc.color} uppercase tracking-widest mb-3">${doc.spec}</p>
-                    <p class="text-gray-400 italic text-xs leading-relaxed">${doc.moto}</p>
+                    <h4 class="text-xl font-extrabold text-slate-800 tracking-tight">${dr.nume}</h4>
+                    <p class="text-indigo-600 font-bold text-xs uppercase tracking-widest mt-2 mb-4 italic">${dr.spec}</p>
                 </div>
             `).join('');
         }
 
-        async function showSection(sectionId) {
-            // Ascunde toate sectiunile
-            document.querySelectorAll('#content-container > div').forEach(div => div.classList.add('hidden'));
-            // Afiseaza sectiunea ceruta
-            const activeSection = document.getElementById(`${sectionId}-section`);
-            if(activeSection) activeSection.classList.remove('hidden');
-
-            // Actualizare butoane meniu
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active-nav');
-                if (btn.id !== 'nav-administrare') {
-                    btn.classList.add('bg-gray-200', 'text-gray-700');
-                }
-            });
-
-            const activeBtn = document.getElementById(`nav-${sectionId}`);
-            if (activeBtn) activeBtn.classList.add('active-nav');
-
-            // Incarcare date daca e cazul
-            if (sectionId === 'pacienti') {
-                const data = await fetchData('pacienti');
-                generateTable('pacientiTabel', data, [{key:'nume_complet', label:'Nume'}, {key:'numar_telefon', label:'Telefon'}]);
-            }
+        async function showSection(key) {
+            document.getElementById('universalTable').classList.add('hidden');
+            const res = await fetch(API_BASE + key);
+            const data = await res.json();
+            document.getElementById('table-headers').innerHTML = ['_id', 'nume_complet'].map(c => `<th class="px-8 py-8">${c}</th>`).join('') + '<th>Acțiuni</th>';
+            document.getElementById('table-body').innerHTML = data.map(doc => `<tr class="hover:bg-indigo-50/30"><td class="px-8 py-6">${doc._id}</td><td class="px-8 py-6 font-bold text-indigo-700">${doc.nume_complet || '-'}</td><td><i class="fas fa-edit mr-3 text-indigo-400"></i><i class="fas fa-trash text-rose-300"></i></td></tr>`).join('');
+            document.getElementById('universalTable').classList.remove('hidden');
         }
 
-        function generateTable(containerId, data, headers) {
-            const container = document.getElementById(containerId);
-            const thead = container.querySelector('thead');
-            const tbody = container.querySelector('tbody');
-            if(!thead || !tbody) return;
-            thead.innerHTML = `<tr>${headers.map(h => `<th class="px-4 py-3 text-left text-sm text-indigo-700 uppercase">${h.label}</th>`).join('')}</tr>`;
-            tbody.innerHTML = data.length ? data.map((item, i) => `
-                <tr class="${i%2===0?'bg-white':'bg-gray-50'} border-b">
-                    ${headers.map(h => `<td class="px-4 py-2 text-sm">${item[h.key] || '-'}</td>`).join('')}
-                </tr>`).join('') : '<tr><td colspan="5" class="p-4 text-center">Fără date disponibile</td></tr>';
-        }
-
-        async function fetchData(endpoint) {
-            try {
-                const response = await fetch(API_BASE + endpoint);
-                return await response.json();
-            } catch (e) { return []; }
-        }
-
-        window.onload = () => {
-            renderHeroDoctori();
-            showSection('detalii');
-        };
+        window.onload = () => { renderStaff(); renderDentition(); };
     </script>
 </body>
 </html>
