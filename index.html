@@ -72,7 +72,8 @@
 					<a href="#ghid-vizual" class="bg-indigo-400 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Ghid Vizual</a>
                     <a href="#echipa" class="bg-indigo-500 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Medici</a>
                     <a href="#tarife" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Tarife</a>
-                    <a href="#programmedici" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Program Medici Clinică</a>
+					<a href="#calculator_tarife" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Calculator Tarife</a>
+					<a href="#programmedici" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition shadow-2xl text-xs uppercase tracking-widest">Program Medici Clinică</a>
 					
                     <button onclick="openAuthModal()" class="bg-white/10 backdrop-blur-md text-white px-8 py-4 rounded-2xl font-bold border border-white/20 hover:bg-white/20 transition text-xs uppercase tracking-widest">Admin</button>
                 </div>
@@ -354,6 +355,101 @@
             </div>
         </section>
     </div>
+	
+	<section id="calculator_tarife" class="py-24 px-6 bg-gray-100">
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+    <h2 class="text-3xl font-bold mb-4 text-center">Calculator Tarife</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Profilaxie -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Profilaxie</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="100" onchange="calculeazaTotal()"> Consultație simplă - 100 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="150" onchange="calculeazaTotal()"> Consultație primară - 150 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="200" onchange="calculeazaTotal()"> Ședință completă profilaxie copii - 200 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="800" onchange="calculeazaTotal()"> Gutieră bruxism tehnică digitalizată - 800 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="300" onchange="calculeazaTotal()"> Profilaxie adulti (detartraj, periaj, igiena) - 300 Lei
+          </label>
+         <label class="flex items-center gap-2">
+			<input type="checkbox" value="350" onchange="calculeazaTotal()"> Gutiera fluorizare/desensibilizare - 350 Lei
+		</label>
+		
+		
+		
+		
+        </div>
+      </div>
+      <!-- Odontoterapie -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Odontoterapie</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="300" onchange="calculeazaTotal()"> Obturatie fizionomica compozit simpla - 300 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="350" onchange="calculeazaTotal()"> Obturatie fizionomica compozit complexa - 350 Lei
+          </label>
+          <!-- Adaugă restul serviciilor -->
+        </div>
+      </div>
+      <!-- Protetică -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Protetică</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="900" onchange="calculeazaTotal()"> Coroana metalo - CERAMICA total fizionomica - 900 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="1500" onchange="calculeazaTotal()"> Coroana zirconiu CAD/CAM Monolitic - 1500 Lei
+          </label>
+          <!-- Restul serviciilor -->
+        </div>
+      </div>
+      <!-- Pedodontie -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Pedodontie</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="100" onchange="calculeazaTotal()"> Consultatie pedodontie - 100 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="200" onchange="calculeazaTotal()"> Obturație compozit temporar - 200 Lei
+          </label>
+          <!-- Restul serviciilor -->
+        </div>
+      </div>
+      <!-- Ortodontie -->
+      <div>
+        <h3 class="text-xl font-semibold mb-2">Ortodontie</h3>
+        <div class="space-y-2">
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="200" onchange="calculeazaTotal()"> Consultatie ortodontie - 200 Lei
+          </label>
+          <label class="flex items-center gap-2">
+            <input type="checkbox" value="200" onchange="calculeazaTotal()"> Scanare intraorala - 200 Lei
+          </label>
+          <!-- Restul serviciilor -->
+        </div>
+      </div>
+    </div>
+    <div class="text-center">
+      <h3 class="text-xl font-semibold">Total: <span id="total_suma">0 Lei</span></h3>
+    </div>
+  </div>
+</section>
+	
+	
+	
+	
 
     <div id="admin-view" class="hidden flex h-screen overflow-hidden animate-fade-up">
         <aside class="sidebar-gradient w-80 flex-shrink-0 p-10 flex flex-col text-white">
@@ -678,6 +774,18 @@ function updateCalendarForDoctor() {
         showPacientiNoi(); // Reîmprospătează tabelul
 		}
 	}
+	
+	
+	function calculeazaTotal() {
+  let total = 0;
+  document.querySelectorAll('#calculator_tarife input[type="checkbox"]').forEach(cb => {
+    if (cb.checked) {
+      total += parseFloat(cb.value);
+    }
+  });
+  document.getElementById('total_suma').innerText = total + ' Lei';
+}
+	
 
         // ACESTA ESTE PUNCTUL CHEIE CARE LIPSEA
         window.onload = () => { 
@@ -688,5 +796,36 @@ function updateCalendarForDoctor() {
 			initCalendar(); // Lansează calendarul
         };
     </script>
+	
+	<script>
+        window.onload = () => { 
+            renderStaff();     
+            renderDentition(); 
+            populateDoctorSelect(); 
+            populateCalendarDoctors(); 
+            initCalendar(); 
+        };
+    </script>
+
+    <a href="https://wa.me/40771033439" target="_blank" 
+       style="position:fixed; bottom:30px; right:30px; background:#22c55e; color:white; border-radius:50%; width:65px; height:65px; display:flex; align-items:center; justify-content:center; font-size:32px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index:9999; text-decoration:none;" 
+       class="pulse-btn">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <style>
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    .pulse-btn { animation: pulse-green 2s infinite; border-radius: 50%; }
+    </style>
+
 </body>
 </html>
+	
+	
+	
+	
+	
